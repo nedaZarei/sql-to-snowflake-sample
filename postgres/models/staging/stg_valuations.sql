@@ -16,4 +16,4 @@ select distinct
         when extract(month from cast(valuation_date as date)) between 7 and 9 then 'Q1'
         when extract(month from cast(valuation_date as date)) between 10 and 12 then 'Q2'
     end as valuation_fiscal_quarter
-from {{ ref('raw_valuations') }}
+from {{ source('raw', 'raw_valuations') }}

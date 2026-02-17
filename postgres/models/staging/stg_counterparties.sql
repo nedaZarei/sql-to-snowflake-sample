@@ -5,5 +5,5 @@ select distinct
     country,
     credit_rating,
     cast(is_active as boolean) as is_active
-from {{ ref('raw_counterparties') }}
+from {{ source('raw', 'raw_counterparties') }}
 where cast(is_active as boolean) = true

@@ -19,4 +19,4 @@ select distinct
     end as cashflow_fiscal_quarter,
     -- Anti-pattern: PostgreSQL-specific extract
     extract(year from cast(cashflow_date as date)) as cashflow_year
-from {{ ref('raw_cashflows') }}
+from {{ source('raw', 'raw_cashflows') }}

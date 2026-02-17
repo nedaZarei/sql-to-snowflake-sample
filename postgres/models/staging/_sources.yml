@@ -1,0 +1,91 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Raw seed data loaded into PostgreSQL
+    schema: public_raw
+    loader: dbt seed
+    freshness:
+      warn_after: {count: 24, period: hour}
+      error_after: {count: 48, period: hour}
+    loaded_at_field: "null"  # Seeds don't have loaded_at; placeholder for real sources
+
+    tables:
+      - name: raw_portfolios
+        description: Portfolio master data with strategy and manager assignments
+        columns:
+          - name: portfolio_id
+            tests:
+              - unique
+              - not_null
+
+      - name: raw_positions
+        description: Daily position snapshots with quantities and market values
+        columns:
+          - name: position_id
+            tests:
+              - unique
+              - not_null
+
+      - name: raw_trades
+        description: Trade execution records with settlement details
+        columns:
+          - name: trade_id
+            tests:
+              - unique
+              - not_null
+
+      - name: raw_instruments
+        description: Security master with instrument classification
+        columns:
+          - name: instrument_id
+            tests:
+              - unique
+              - not_null
+
+      - name: raw_counterparties
+        description: Trading counterparty and prime broker reference data
+        columns:
+          - name: counterparty_id
+            tests:
+              - unique
+              - not_null
+
+      - name: raw_cashflows
+        description: Fund cashflow transactions (capital calls, distributions, fees)
+        columns:
+          - name: cashflow_id
+            tests:
+              - unique
+              - not_null
+
+      - name: raw_valuations
+        description: Periodic portfolio and fund valuation snapshots
+        columns:
+          - name: valuation_id
+            tests:
+              - unique
+              - not_null
+
+      - name: raw_benchmarks
+        description: Market benchmark daily returns and levels
+        columns:
+          - name: benchmark_id
+            tests:
+              - not_null
+
+      - name: raw_fund_structures
+        description: Fund master data with fee structures and terms
+        columns:
+          - name: fund_id
+            tests:
+              - unique
+              - not_null
+
+      - name: raw_dates
+        description: Calendar dimension with business day and fiscal period flags
+        columns:
+          - name: date_day
+            tests:
+              - unique
+              - not_null

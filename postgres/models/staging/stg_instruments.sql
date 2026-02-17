@@ -20,4 +20,4 @@ select distinct
         when instrument_type in ('private_equity', 'venture_capital', 'real_estate', 'real_estate_debt', 'infrastructure') then 'illiquid'
         else 'other'
     end as liquidity_class
-from {{ ref('raw_instruments') }}
+from {{ source('raw', 'raw_instruments') }}

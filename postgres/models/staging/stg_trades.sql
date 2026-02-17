@@ -24,5 +24,5 @@ select distinct
     end as trade_fiscal_quarter,
     -- Anti-pattern: PostgreSQL-specific date arithmetic
     cast(settlement_date as date) - cast(trade_date as date) as settlement_days
-from {{ ref('raw_trades') }}
+from {{ source('raw', 'raw_trades') }}
 where status = 'settled'

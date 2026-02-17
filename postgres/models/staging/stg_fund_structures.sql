@@ -10,4 +10,4 @@ select distinct
     cast(gp_commitment_pct as numeric(8,4)) as gp_commitment_pct,
     fund_currency,
     fund_status
-from {{ ref('raw_fund_structures') }}
+from {{ source('raw', 'raw_fund_structures') }}

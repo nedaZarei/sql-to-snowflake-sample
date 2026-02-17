@@ -10,3 +10,23 @@ sample_fund_analytics:
       dbname: "{{ env_var('DBT_PG_DBNAME', 'fund_analytics') }}"
       schema: public
       threads: 4
+
+    staging:
+      type: postgres
+      host: "{{ env_var('DBT_PG_HOST', 'localhost') }}"
+      port: "{{ env_var('DBT_PG_PORT', 5433) | int }}"
+      user: "{{ env_var('DBT_PG_USER', 'postgres') }}"
+      password: "{{ env_var('DBT_PG_PASSWORD', 'postgres') }}"
+      dbname: "{{ env_var('DBT_PG_DBNAME', 'fund_analytics') }}"
+      schema: staging
+      threads: 4
+
+    prod:
+      type: postgres
+      host: "{{ env_var('DBT_PG_HOST') }}"
+      port: "{{ env_var('DBT_PG_PORT', 5432) | int }}"
+      user: "{{ env_var('DBT_PG_USER') }}"
+      password: "{{ env_var('DBT_PG_PASSWORD') }}"
+      dbname: "{{ env_var('DBT_PG_DBNAME') }}"
+      schema: prod
+      threads: 8

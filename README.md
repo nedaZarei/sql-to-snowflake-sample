@@ -8,16 +8,19 @@ A fully working dbt project built on PostgreSQL, designed as a sample for transl
 sample-dbt/
 ├── postgres/                         # Source: fully working PostgreSQL dbt project
 │   ├── dbt_project.yml
-│   ├── profiles.yml
+│   ├── profiles.yml                  # Multi-environment (dev/staging/prod)
 │   ├── packages.yml
 │   ├── docker-compose.yml
 │   ├── seeds/                        # 10 CSV seed files (raw data)
 │   ├── models/
-│   │   ├── staging/                  # 10 models
+│   │   ├── staging/                  # 10 models + sources.yml
 │   │   ├── intermediate/             # 8 models
 │   │   └── marts/                    # 10 models (5 FACTs + 5 REPORTs)
 │   ├── macros/                       # 2 macro files (intentionally underused)
 │   ├── tests/                        # 1 custom data test
+│   ├── orchestration/
+│   │   ├── dags/                     # Airflow DAG for pipeline scheduling
+│   │   └── run_pipeline.sh           # Shell script for manual/CI execution
 │   └── schemas/
 │       ├── generate_schemas.py       # Connects to live PG, extracts schema docs
 │       └── all_schemas_postgres.md   # Auto-generated: 10 tables, 28 views
@@ -49,6 +52,23 @@ dbt run
 # Run all tests
 dbt test
 ```
+
+Or use the orchestration script to run the full pipeline:
+
+```bash
+cd postgres/
+./orchestration/run_pipeline.sh
+```
+
+## Data Engineer Coverage
+
+This project covers the three core data engineer pillars:
+
+| Pillar | What's Included |
+|---|---|
+| **SQL** | 28 models with window functions, CTEs, aggregations, joins, IRR calculations |
+| **ETL/ELT Pipelines** | dbt staging -> intermediate -> marts layering, `source()` definitions with freshness checks, seed loading |
+| **Orchestration** | Airflow DAG with tagged pipeline execution, shell runner script, multi-environment profiles (dev/staging/prod) |
 
 ## Three Pipelines
 
@@ -87,6 +107,9 @@ This project contains deliberate anti-patterns that represent real-world optimiz
 | Deep CTE nesting (5-6 levels) | `int_irr_calculations`, `int_daily_positions` | Simplify to fewer passes |
 | Repeated expensive joins | `fact_portfolio_pnl` re-does `int_trade_enriched` joins | Reuse intermediate models |
 | Running totals computed multiple times | Intermediate + mart layers | Compute once upstream |
+| Sequential pipeline orchestration | Airflow DAG, `run_pipeline.sh` | Parallelize independent pipelines A/B/C |
+| Monolithic test step | Airflow DAG runs all tests at end | Test per-pipeline after each completes |
+| No source freshness before models | Orchestration scripts | Check freshness before running dependent models |
 
 ## Schema Documentation
 
@@ -94,6 +117,18 @@ The `schemas/` folders contain Python scripts that connect to the live database 
 
 - **PostgreSQL:** `postgres/schemas/all_schemas_postgres.md` (pre-generated)
 - **Snowflake:** Run `snowflake/schemas/generate_schemas.py` after translation
+
+## Environments
+
+The project supports three environments via `profiles.yml`:
+
+| Target | Schema | Use Case |
+|---|---|---|
+| `dev` | `public` | Local development (default, uses docker-compose) |
+| `staging` | `staging` | Pre-production validation |
+| `prod` | `prod` | Production (requires env vars, no defaults) |
+
+Switch targets with: `dbt run --target staging`
 
 ## Domain
 

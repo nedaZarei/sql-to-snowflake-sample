@@ -17,4 +17,4 @@ select distinct
         then (cast(market_value as numeric(18,2)) - cast(cost_basis as numeric(18,2))) / abs(cast(cost_basis as numeric(18,2)))
         else 0
     end as unrealized_return_pct
-from {{ ref('raw_positions') }}
+from {{ source('raw', 'raw_positions') }}

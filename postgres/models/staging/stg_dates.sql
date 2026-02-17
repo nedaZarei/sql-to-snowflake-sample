@@ -11,4 +11,4 @@ select
     date_trunc('quarter', cast(date_day as date)) as quarter_start,
     extract(month from cast(date_day as date)) as calendar_month,
     extract(year from cast(date_day as date)) as calendar_year
-from {{ ref('raw_dates') }}
+from {{ source('raw', 'raw_dates') }}
