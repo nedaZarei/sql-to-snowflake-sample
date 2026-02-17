@@ -1,0 +1,12 @@
+sample_fund_analytics:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      port: 5433
+      user: "{{ env_var('DBT_PG_USER', 'postgres') }}"
+      password: "{{ env_var('DBT_PG_PASSWORD', 'postgres') }}"
+      dbname: "{{ env_var('DBT_PG_DBNAME', 'fund_analytics') }}"
+      schema: public
+      threads: 4
